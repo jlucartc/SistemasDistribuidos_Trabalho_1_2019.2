@@ -1,19 +1,20 @@
 # -*- coding:utf-8 -*-
 
-# Interface do servidor, responsável por mandar e receber chamadas síncronas(TCP)
-# via socket.
-
 import socket
 
 class SendTCP:
 
-    def __init__(self,host = "0.0.0.0", port = "0"):
+    def __init__(self,host = "0.0.0.0", port = "0", msg = ""):
         self.host = host
         self.port = port
-        try:
-            self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        except:
-            print("Falha na criação do socket")
+        self.msg = msg
+        self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
     def send(self):
-        self.socket.bind(self.host,self.port)
+        try:
+            self.socket.connect((self.host,self.port))
+            self.socket.send(self.msg.encode())
+            data = self.socket.recv(4096)
+            print(data.decode())
+        except InterruptedError:
+            print("Conexão interrompida")

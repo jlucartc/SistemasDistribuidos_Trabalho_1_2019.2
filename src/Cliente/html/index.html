@@ -1,0 +1,28 @@
+{% extends './master.html' %}
+
+{% block conteudo %}
+<div class="container-fluid h-100">
+  <div class="row h-100">
+    <div class="col-lg-3 col-md-4 col-sm-12 bg-secondary">
+        <div class="container-fluid">
+          <div class="row py-2">
+            <div class="col-12 my-2">
+              <button type="button" name="button" class="btn btn-light btn-block">Descobrir dispositivos</button>
+              <button type="button" name="button" class="btn btn-light btn-block">Testar conexão</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-12 bg-dark">
+      {% if testemsg %}
+      <div class="alert alert-success my-2">
+        {{testemsg}}
+      </div>
+      {% endif %}
+      <div class="alert alert-info my-2">
+        Ainda não há dispositivos descobertos
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

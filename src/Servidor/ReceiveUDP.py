@@ -5,21 +5,19 @@
 
 import socket
 import struct
-from threading import Thread
+import datetime
+from SendUDP import SendUDP
+from threading import Thread, get_ident
 import sys
 
 class ReceiveUDP(Thread):
 
-    def __init__(self,host = "224.0.0.2",port = 9998, listen_all = False):
+    def __init__(self,host = "224.0.0.0",port = 0, listen_all = False):
         Thread.__init__(self)
         self.host = host
         self.port = port
         self.listen_all = listen_all
-        try:
-            self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM,socket.IPPROTO_UDP)
-        except:
-            print("Falha na criação do socket")
-            sys.exit()
+        self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM,socket.IPPROTO_UDP)
 
     def receive(self):
         try:
@@ -28,21 +26,31 @@ class ReceiveUDP(Thread):
                 self.socket.bind(('',self.port))
             else:
                 self.socket.bind((self.host,self.port))
+        except OSError:
+            print("Erro na criação do socket. Verifique se a porta "+str(self.port)+" já está sendo utilizada")
+        try:
             group = socket.inet_aton(self.host)
             mreq = struct.pack("4sl",group,socket.INADDR_ANY)
             self.socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
-        except:
-            print("Falha na criação do socket. Verifique se a porta "+str(self.port)+" já está sendo utilizada.")
+        except OSError:
+            print("Endereço de host inválido. Verifique se o formato está correto")
             sys.exit()
 
         print("Recebendo...")
 
         while True:
-            d = self.socket.recvfrom(1024)
-            print("Receptor "+str(self.port)+"\n")
-            print("     Dado recebido de "+str(d[1])+"\n")
-            print("     Mensagem: "+str(d[0])+"\n")
-
+            try:
+                msg, addr = self.socket.recvfrom(1024)
+            except InterruptedError:
+                print("Execução interrompida")
+            else:
+                try:
+                    f = open("logfile-"+str(get_ident())+".txt",'a')
+                    f.write(msg.decode()+"\n")
+                    print("Mensagem recebida em "+str(datetime.datetime.now()))
+                except PermissionError:
+                    print("Erro: permissão de acesso ao arquivo negada")
+                    
     def run(self):
 
         self.receive()
