@@ -1,0 +1,17 @@
+message ClientRequest {
+
+  /**
+    tipo: identifica a operação desejada
+    id: campo responsavel por identificar o dispositivo, no caso de uma execução de método
+  **/
+
+  int32 id = 1
+
+  enum TipoOperacao {
+
+    DESCOBERTA = 0
+    EXECUCAO_DE_METODO = 1
+
+  }
+
+}

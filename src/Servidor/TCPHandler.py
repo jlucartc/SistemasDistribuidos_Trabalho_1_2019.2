@@ -16,15 +16,22 @@ class TCPHandler(Thread):
         except InterruptedError:
             print("Conexão interrompida")
         try:
-            f = open("tcp_logfile_"+str(get_ident())+".txt",'a')
-            f.write(data.decode())
-            print("Mensagem recebida")
+            #f = open("tcp_logfile_"+str(get_ident())+".txt",'a')
+            #f.write(data.decode())
+            data = data.decode()
+            try:
+                if(data == "DESCOBERTA"):
+                    self.conn.send("5".encode())
+                elif(data == "DADOS"):
+                    self.conn.send("45 graus Celsius".encode())
+                else:
+                    self.conn.send(self.msg.encode())
+                print("Mensagem recebida")
+            except InterruptedError :
+                print("Conexão interrompida")
         except PermissionError:
             print("Erro: permissão de acesso ao arquivo negada")
-        try:
-            self.conn.send(self.msg.encode())
-        except InterruptedError:
-            print("Conexão interrompida")
+
         self.conn.close()
 
     def run(self):

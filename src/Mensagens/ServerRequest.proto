@@ -1,0 +1,14 @@
+message ServerRequest {
+
+  string dispositivoNome = 1
+
+  string metodoNome = 2
+
+  enum TipoRequisicao {
+
+    DESCOBERTA = 0;
+    EXECUTAR_METODO = 1;
+
+  }
+
+}

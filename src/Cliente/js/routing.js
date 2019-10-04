@@ -17,7 +17,31 @@ router.get('/',function(req,res){
 
 });
 
-//router.get('/descobrir',function(req,res){ /****/ });
+router.get('/descobrir',function(req,res){
+
+  var conn = net.createConnection({ port : 9999, host: '127.0.0.1'},() => {
+
+    conn.write("DESCOBERTA");
+
+  });
+
+  conn.on('data',function(data){
+      itens = new Array();
+      for(i = 0; i < parseInt(data.toString()); i++){
+
+        itens.push(i);
+
+      }
+
+      res.render('index',{itens : itens});
+      conn.end();
+  });
+
+  conn.on('error',function(err){
+      res.render('index',{testemsg : 'Falha na conexão', type: 'danger'})
+  });
+
+});
 
 //router.get('/ver/:id'),function(req,res){ /****/ });
 
@@ -30,8 +54,12 @@ router.get('/teste',function(req,res){
   });
 
   conn.on('data',function(data){
-      res.render('index',{testemsg : data.toString()});
+      res.render('index',{testemsg : data.toString(), type: 'success'});
       conn.end();
+  });
+
+  conn.on('error',function(err){
+      res.render('index',{testemsg : 'Falha na conexão', type: 'danger'})
   });
 
 });

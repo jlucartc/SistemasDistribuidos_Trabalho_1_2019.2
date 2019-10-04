@@ -1,0 +1,7 @@
+message ResultadoDescobertaDispositivo {
+
+  string nomeDispositivo = 1
+
+  repeated string nomesMetodos = 2
+
+}

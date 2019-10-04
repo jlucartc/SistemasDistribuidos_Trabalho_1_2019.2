@@ -1,0 +1,19 @@
+message ResultadoDescobertaServidor {
+
+  repeated Dispositivo dispositivos = 1;
+
+}
+
+message Dispositivo {
+
+  int32 id = 1
+  string nome = 2
+  repeated Metodo metodos = 3
+
+}
+
+message Metodo {
+
+  string nome = 1
+
+}

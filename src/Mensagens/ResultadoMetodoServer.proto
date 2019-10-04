@@ -1,0 +1,5 @@
+message ResultadoMetodoServer {
+
+  string dado = 1;
+
+}

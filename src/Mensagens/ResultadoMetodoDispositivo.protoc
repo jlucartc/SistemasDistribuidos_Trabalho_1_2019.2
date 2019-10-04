@@ -1,0 +1,6 @@
+message ResultadoMetodoDispositivo {
+
+  int32 id = 1
+  string resultadoMetodo = 2
+
+}
