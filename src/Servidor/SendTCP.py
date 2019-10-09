@@ -4,7 +4,7 @@ import socket
 
 class SendTCP:
 
-    def __init__(self,host = "0.0.0.0", port = "0", msg = ""):
+    def __init__(self,host,port,msg):
         self.host = host
         self.port = port
         self.msg = msg
@@ -13,7 +13,7 @@ class SendTCP:
     def send(self):
         try:
             self.socket.connect((self.host,self.port))
-            self.socket.send(self.msg.encode())
+            self.socket.send(self.msg)
             data = self.socket.recv(4096)
             print(data.decode())
         except InterruptedError:
