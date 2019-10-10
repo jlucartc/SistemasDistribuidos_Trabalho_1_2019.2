@@ -1,8 +1,5 @@
 # -*- coding:utf-8 -*-
 
-# Interface do servidor, responsável por mandar e receber chamadas assíncronas(UDP)
-# via socket.
-
 import socket
 import struct
 import datetime
@@ -22,8 +19,7 @@ class SendAndWaitUDP(Thread):
         self.msg = msg
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM,socket.IPPROTO_UDP)
 
-    def receive(self,rementente,destinatario):
-        print("Send and wait...")
+    def configurar(self):
         try:
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             #if(self.listen_all == True):
@@ -40,22 +36,28 @@ class SendAndWaitUDP(Thread):
             print("Endereço de host inválido. Verifique se o formato está correto")
             sys.exit()
 
+    def receive(self):
+
+        self.configurar()
+
         ret = None
         snd = SendUDP(self.disp_host,self.disp_port)
         while 1:
             try:
-                #snd.send(self.msg)
-                t1 = Timer(0.05,snd.send,[self.msg])
+                t1 = Timer(0.05,snd.send,[self.msg.SerializeToString()])
                 t1.start()
                 msg, addr = self.socket.recvfrom(1024)
             except InterruptedError:
                 print("Execução interrompida")
             else:
                 try:
+
+                    # Desfaz a serialização da mensagem
                     ret = Msgs_pb2.MsgSrvDisp()
                     ret.ParseFromString(msg)
-                    if( ret.tipo == Msgs_pb2.MsgSrvDisp.Tipo.RESPOSTA ):
-                        print(str(ret.tipo))
+
+                    # Checa se a mensagem é do tipo RESPOSTA e se é resultado do método e do dispositivo adequado
+                    if( ret.tipo == Msgs_pb2.MsgSrvDisp.Tipo.RESPOSTA and ret.disp_id == self.msg.disp_id and ret.nome_op == self.msg.nome_op ):
                         break
                     print("Send and Receive - Mensagem recebida em "+str(datetime.datetime.now()))
                 except PermissionError:

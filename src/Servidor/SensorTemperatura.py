@@ -1,12 +1,12 @@
 # -*- coding:utf-8 -*-
 
 from Dispositivo import Dispositivo
-from threading import Thread, get_ident, Timer
+from threading import Thread, get_ident
 from DispReceiveUDP import DispReceiveUDP
 from SendUDP import SendUDP
 import Msgs_pb2
 
-class SensorUmidade(Dispositivo,Thread):
+class SensorTemperatura(Dispositivo,Thread):
 
     def __init__(self,disp_host,disp_port,server_host,server_port,dict,nome):
         Dispositivo.__init__(self,dict,nome)
@@ -16,8 +16,8 @@ class SensorUmidade(Dispositivo,Thread):
         self.server_host = server_host
         self.server_port = server_port
         ops = {
-            'ler_umidade' : 'Umidade em 0.01 Kg/(m^3)',
-            'ler_bateria' : 'Bateria em 30%'
+            'ler_temperatura' : '26º C',
+            'ler_bateria' : 'Bateria em 45%'
         }
         self.addDictOp(ops)
 
@@ -38,5 +38,4 @@ class SensorUmidade(Dispositivo,Thread):
         self.id = str(get_ident())
         self.udp_receiver = DispReceiveUDP(self.disp_host,self.disp_port,self.server_host,self.server_port,self.id,self.getDict(),self.nome)
         self.udp_receiver.start()
-        Timer
         self.anunciar()

@@ -1,8 +1,5 @@
 # -*- coding:utf-8 -*-
 
-# Interface do servidor, responsável por mandar e receber chamadas assíncronas(UDP)
-# via socket.
-
 import socket
 import struct
 import datetime
@@ -23,7 +20,7 @@ class ServerReceiveUDP(Thread):
         self.server_id = server_id
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM,socket.IPPROTO_UDP)
 
-    def receive(self):
+    def configurar(self):
         try:
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.socket.bind((self.server_host,self.server_port))
@@ -37,6 +34,10 @@ class ServerReceiveUDP(Thread):
             print("Endereço de host inválido. Verifique se o formato está correto")
             sys.exit()
 
+    def receive(self):
+
+        self.configurar();
+
         while True:
             try:
                 msg, addr = self.socket.recvfrom(1024)
@@ -46,25 +47,15 @@ class ServerReceiveUDP(Thread):
                 try:
                     ret = Msgs_pb2.MsgSrvDisp()
                     ret.ParseFromString(msg)
-                    if( ret.tipo == Msgs_pb2.MsgSrvDisp.Tipo.ANUNCIO ):
-                        for i in range(0,len(ret.disps)):
-                            self.lista.append(ret.disps[i])
-                            print("Servidor "+self.server_id+" recebendo anuncio de "+ret.disps[i].nome+" em "+str(datetime.datetime.now()))
-                    elif( ret.tipo == Msgs_pb2.MsgSrvDisp.Tipo.DESCOBERTA ):
-                        if( ret.dstn == self.server_id ):
-                            print("Servidor recebendo descoberta de "+ret.rmtt)
-                            for i in range(0,len(ret.disps)):
-                                c = False
-                                for j in range(0,len(self.lista)):
-                                    if( self.lista[j].id == ret.disps[i].id ):
-                                        c = True
-                                        break
-                                if(c == False):
-                                    self.lista.append(ret.disps[i])
-                    elif( ret.tipo == Msgs_pb2.MsgSrvDisp.Tipo.RESPOSTA ):
-                        if( ret.dstn == self.server_id ):
-                            print("Mensagem recebida em "+str(datetime.datetime.now()))
-                            print("Dado: "+str(ret.dado))
+                    if( ret.tipo == Msgs_pb2.MsgSrvDisp.Tipo.ANUNCIO or ret.tipo == Msgs_pb2.MsgSrvDisp.Tipo.DISPOSITIVO ):
+                        print("Servidor recebendo dispositivo descoberto: "+ret.disp_id)
+                        c = False
+                        for j in range(0,len(self.lista)):
+                            if( self.lista[j].id == ret.disp.id ):
+                                c = True
+                                break
+                        if(c == False):
+                            self.lista.append(ret.disp)
                 except PermissionError:
                     print("Erro: permissão de acesso ao arquivo negada")
 

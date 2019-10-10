@@ -9,17 +9,11 @@ var dispositivos = [];
 
 router.get('/',function(req,res){
 
-  fs.readFile('html/index.html',function(err,data){
-    if(err){
-      res.write("Erro na leitura do arquivo.");
-      res.end();
-    }else{
       res.render('index',{});
-    }
-
-  });
+      return;
 
 });
+
 
 router.get('/descobrir',function(req,res){
 
@@ -27,16 +21,19 @@ router.get('/descobrir',function(req,res){
 
   var conn = net.createConnection({ port : 9999, host: '127.0.0.1'},() => {
 
-    msg = mensagens.MsgSrvCli.encode({ tipo : mensagens.MsgSrvCli.Tipo.DESREQ, id: "0", dado : '', disps : [] });
+    msg = mensagens.MsgSrvCli.encode({ tipo : mensagens.MsgSrvCli.Tipo.DESCOBERTA });
 
     conn.write(msg);
+
+    return;
 
   });
 
   conn.setTimeout(timeout,function(){
 
-    res.render('index',{testemsg: 'Timeout atingido',type : 'warning'})
+    res.render('index',{testemsg: 'Timeout atingido',type : 'warning'});
     conn.end();
+    return;
 
   });
 
@@ -44,26 +41,36 @@ router.get('/descobrir',function(req,res){
 
       msg = new mensagens.MsgSrvCli.decode(data)
 
+      console.log(dispositivos)
+
       dispositivos = msg.disps
 
       var itens = msg.disps
 
+      console.log("Até aqui, tudo bem");
+
       if(itens.length == 0){
 
+        console.log("Fui por aqui...")
         res.render('index',{testemsg : "Não há dispositivos conectados no momento", itens : itens, type: "info"});
+        conn.end();
+        return;
 
       }else{
 
+        console.log("Ou por aqui...")
         res.render('index',{itens : itens});
+        conn.end();
+        return;
 
       }
 
-
-      conn.end();
   });
 
   conn.on('error',function(err){
-      res.render('index',{testemsg : 'Falha na conexão', type: 'danger'})
+      res.render('index',{testemsg : 'Falha na conexão', type: 'danger'});
+      conn.end();
+      return;
   });
 
 });
@@ -85,38 +92,20 @@ router.get('/ver/:id',function(req,res){
   }
 
   res.render('index',{dispositivo: disp});
+  return;
 
 });
 
-router.get('/teste',function(req,res){
+router.get('/ausente',function(req,res){
 
-  timeout = 3000;
-
-  var conn = net.createConnection({ port : 9999, host: '127.0.0.1'},() => {
-
-    conn.write("Fazendo requisição para o servidor");
-
-  });
-
-  conn.on('data',function(data){
-      res.render('index',{testemsg : data.toString(), type: 'success'});
-      conn.end();
-  });
-
-  conn.on('error',function(err){
-      res.render('index',{testemsg : 'Falha na conexão', type: 'danger'})
-  });
-
-  conn.setTimeout(timeout,function(){
-      res.render('index',{testemsg : 'Timeout atingido. Conexão estabelecida', type: 'success'});
-      conn.end();
-  });
+  res.render('index',{testemsg : 'O dispositivo não se encontra na rede', type: 'warning'});
+  return;
 
 });
 
 router.post('/executar',function(req,res){
 
-  var string = req.body.op.split("-");
+  string = req.body.op.split('-')
 
   var op = string[1];
   var id = string[0];
@@ -129,9 +118,9 @@ router.post('/executar',function(req,res){
   var conn = net.createConnection({ port : 9999, host: '127.0.0.1'},() => {
 
     msg = mensagens.MsgSrvCli.encode({
-      tipo : mensagens.MsgSrvCli.Tipo.OPREQ,
-      id : id,
-      dado : op
+      tipo : mensagens.MsgSrvCli.Tipo.OPERACAO,
+      disp_id : id,
+      nome_op : op
     });
 
     conn.write(msg);
@@ -140,22 +129,21 @@ router.post('/executar',function(req,res){
 
   conn.setTimeout(timeout,function(){
 
-    res.render('index',{testemsg: 'Timeout atingido',type : 'warning'})
+    res.redirect('/ausente');
     conn.end();
 
   });
+
 
   conn.on('data',function(data){
 
       var msg = new mensagens.MsgSrvCli.decode(data);
 
-      var id = msg.id;
+      var id = msg.disp_id;
 
-      var resultado = msg.dado.split("-");
+      var resposta = msg.resposta;
 
-      var op = resultado[0];
-
-      var resultado = resultado[1];
+      var op = msg.nome_op;
 
       var disp = [];
 
@@ -171,7 +159,7 @@ router.post('/executar',function(req,res){
 
       }
 
-      res.render('index',{dispositivo: disp, resultado: resultado});
+      res.render('index',{dispositivo: disp, resultado: resposta});
 
       conn.end();
   });

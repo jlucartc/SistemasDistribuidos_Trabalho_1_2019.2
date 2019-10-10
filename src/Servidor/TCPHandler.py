@@ -4,6 +4,7 @@ from threading import Thread,get_ident
 import Msgs_pb2
 from SendAndWaitUDP import SendAndWaitUDP
 from SendUDP import SendUDP
+import socket
 
 class TCPHandler(Thread):
 
@@ -24,35 +25,28 @@ class TCPHandler(Thread):
         except InterruptedError:
             print("Conexão interrompida")
         try:
-            #f = open("tcp_logfile_"+str(get_ident())+".txt",'a')
-            #f.write(data.decode())
             mensagem = Msgs_pb2.MsgSrvCli()
             mensagem.ParseFromString(data)
             try:
-                if(mensagem.tipo == Msgs_pb2.MsgSrvCli.Tipo.DESREQ):
+                if(mensagem.tipo == Msgs_pb2.MsgSrvCli.Tipo.DESCOBERTA):
                     # Manda mensagem UDP multicast para grupo de dispositivos
-                    snd = SendUDP(self.disp_host,self.disp_port)
-                    reqmsg = Msgs_pb2.MsgSrvDisp()
-                    reqmsg.tipo = Msgs_pb2.MsgSrvDisp.Tipo.DESCOBERTA
-                    reqmsg.rmtt = self.server_id
                     response = Msgs_pb2.MsgSrvCli()
-                    response.tipo = Msgs_pb2.MsgSrvCli.Tipo.DESRES
+                    print("Lista do servidor: "+str(self.lista))
+                    response.tipo = Msgs_pb2.MsgSrvCli.Tipo.DISPOSITIVOS
                     response.disps.extend(self.lista)
                     self.conn.send(response.SerializeToString())
-                elif(mensagem.tipo == Msgs_pb2.MsgSrvCli.Tipo.OPREQ):
+                elif(mensagem.tipo == Msgs_pb2.MsgSrvCli.Tipo.OPERACAO):
                     # Manda mensagem UDP multicast para grupo de dispositivo
-                    snd = SendUDP(self.disp_host,self.disp_port)
                     reqmsg = Msgs_pb2.MsgSrvDisp()
-                    reqmsg.tipo = Msgs_pb2.MsgSrvDisp.Tipo.REQUISICAO
-                    reqmsg.dado = mensagem.dado
-                    reqmsg.rmtt = self.server_id
-                    reqmsg.dstn = mensagem.id
-                    rcv = SendAndWaitUDP(self.disp_host,self.disp_port,self.server_host,self.server_port,reqmsg.SerializeToString())
-                    res = rcv.receive(mensagem.id,self.server_id)
+                    reqmsg.tipo = Msgs_pb2.MsgSrvDisp.Tipo.OPERACAO
+                    reqmsg.disp_id = mensagem.disp_id
+                    reqmsg.nome_op = mensagem.nome_op
+                    rcv = SendAndWaitUDP(self.disp_host,self.disp_port,self.server_host,self.server_port,reqmsg)
+                    res = rcv.receive()
                     response = Msgs_pb2.MsgSrvCli()
-                    response.tipo = Msgs_pb2.MsgSrvCli.Tipo.OPRES
-                    response.id = res.rmtt
-                    response.dado = mensagem.dado+"-"+res.dado
+                    response.tipo = Msgs_pb2.MsgSrvCli.Tipo.RESPOSTA
+                    response.disp_id = res.disp_id
+                    response.resposta = res.resposta
                     self.conn.send(response.SerializeToString())
             except InterruptedError :
                 print("Conexão interrompida")

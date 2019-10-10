@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+message MsgSrvDisp {
+
+  enum Tipo {
+
+    ANUNCIO = 0;
+    DESCOBERTA = 1;
+    REQUISICAO  = 2;
+    RESPOSTA = 3;
+
+  }
+
+  Tipo tipo = 1;
+
+  string dstn = 2;
+
+  string rmtt = 3;
+
+  string dado = 4;
+
+  repeated Disp disps = 5;
+
+}
+
+message MsgSrvCli {
+
+  enum Tipo {
+
+    DESREQ = 0;
+    DESRES = 1;
+    OPREQ = 2;
+    OPRES = 3;
+
+  }
+
+  Tipo tipo = 1;
+
+  string id = 2;
+
+  string dado = 3;
+
+  repeated Disp disps = 4;
+
+}
+
+message Disp {
+
+  string nome = 1;
+
+  string id = 2;
+
+  repeated string ops = 3;
+
+}

@@ -24,14 +24,13 @@ class Servidor(Thread) :
 
     def descobrir(self):
         print("Servidor descobrindo dispositivos...")
-        self.lista = []
+        del self.lista[:]
+        print("Descoberta: Lista do Servidor: "+str(self.lista))
         snd = SendUDP(self.disp_host,self.disp_port)
         msg = Msgs_pb2.MsgSrvDisp()
         msg.tipo = Msgs_pb2.MsgSrvDisp.Tipo.DESCOBERTA
-        msg.rmtt = self.server_id # definir isso
-        msg.dstn = self.server_id
         snd.send(msg.SerializeToString())
-        t = Timer(randint(1,100)*0.5,self.descobrir)
+        t = Timer(randint(20,70)*0.02,self.descobrir)
         t.start()
 
     def iniciar(self):

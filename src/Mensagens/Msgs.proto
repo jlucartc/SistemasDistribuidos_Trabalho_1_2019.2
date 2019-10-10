@@ -1,55 +1,48 @@
 syntax = "proto3";
 
-message MsgSrvDisp {
-
-  enum Tipo {
-
-    ANUNCIO = 0;
-    DESCOBERTA = 1;
-    REQUISICAO  = 2;
-    RESPOSTA = 3;
-
-  }
-
-  Tipo tipo = 1;
-
-  string dstn = 2;
-
-  string rmtt = 3;
-
-  string dado = 4;
-
-  repeated Disp disps = 5;
-
-}
-
 message MsgSrvCli {
 
   enum Tipo {
 
-    DESREQ = 0;
-    DESRES = 1;
-    OPREQ = 2;
-    OPRES = 3;
+    DESCOBERTA = 0; /* cliente faz requisição de descoberta */
+    DISPOSITIVOS = 1; /* servidor retorna dispositivos descobertos */
+    OPERACAO = 2; /* cliente faz requisição de operação */
+    RESPOSTA = 3; /* servidor retorna resultado da operação */
 
   }
 
-  Tipo tipo = 1;
+  Tipo tipo = 1; /* tipo da mensagem */
+  repeated Disp disps = 2; /* lista de dispositivos, para tipo DISPOSITIVOS */
+  string disp_id = 3; /* id do dispositivo, para tipo OPERACAO */
+  string nome_op = 4; /* nome da operação, para tipo OPERACAO */
+  string resposta = 5; /* resultado da operação, para tipo RESPOSTA  */
 
-  string id = 2;
+}
 
-  string dado = 3;
+message MsgSrvDisp {
 
-  repeated Disp disps = 4;
+  enum Tipo {
+
+    DESCOBERTA = 0; /* servidor faz requisição de descoberta */
+    DISPOSITIVO = 1; /* dispositivo manda resposta ao servidor listando a si mesmo*/
+    OPERACAO = 2; /* servidor faz requisicao de metodo aos dispositivos */
+    RESPOSTA = 3; /* dispositivo responde ao servidor com resultado do método */
+    ANUNCIO = 4; /* dispositivo anuncia a si mesmo ao entrar na rede */
+
+  }
+
+  Tipo tipo = 1; /* tipo da mensagem */
+  Disp disp = 2; /* dispositivo, caso a mensagem seja do tipo DISPOSITIVO ou ANUNCIO */
+  string disp_id = 3; /* id do dispositivo, caso a mensagem seja do tipo OPERACAO ou ANUNCIO */
+  string nome_op = 4; /* nome da operação, caso a mensagem seja do tipo OPERACAO */
+  string resposta = 5; /* resultado da operação, caso a mensagem seja do tipo RESULTADO */
 
 }
 
 message Disp {
 
   string nome = 1;
-
   string id = 2;
-
   repeated string ops = 3;
 
 }
