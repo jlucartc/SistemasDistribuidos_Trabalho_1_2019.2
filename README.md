@@ -13,11 +13,11 @@ Para rodar o servidor, vá até `<projeto>/src/Servidor` e execute o comando `py
    
 ### Cliente
 
+Para rodar o cliente, vá até `<projeto>/src/Cliente` e execute o comando `node .`. Por padrão, o servidor web iniciado        disponibilizará a aplicação no endereço `localhost:8888`. Para acessar o cliente, basta digitar `localhost:8888` na barra do navegador.
+
 ## Instalação no Windows
 
 No windows, basta instalar o node.js baixando seu instalador em https://nodejs.org/en/download/ e executar o mesmo comando de inicialização do Cliente no cmd. O mesmo se aplica à instalação do Python, disponível em https://www.python.org/downloads/ , e à execução do Servidor.
-
-Para rodar o cliente, vá até `<projeto>/src/Cliente` e execute o comando `node .`. Por padrão, o servidor web iniciado        disponibilizará a aplicação no endereço `localhost:8888`. Para acessar o cliente, basta digitar `localhost:8888` na barra do navegador.
 
 ## Sobre as mensagens
 
