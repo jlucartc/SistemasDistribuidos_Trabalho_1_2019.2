@@ -22,7 +22,3 @@ No windows, basta instalar o node.js baixando seu instalador em https://nodejs.o
 ## Sobre as mensagens
 
 Os arquivos `.proto` que descrevem as mensagens trocadas entre as partes da aplicação estão descritos em `<projeto>/src/Mensagens/Msgs.proto`. Foi utilizada a versão 3 do Protocol Buffers.
-
-## Slides
-
-Slides com a explicação de detalhes do projeto: https://docs.google.com/presentation/d/1odyf3hmVYzttz_NewHR4yMSzwMcLmXZ9kAAQtzECx18/edit?usp=sharing
