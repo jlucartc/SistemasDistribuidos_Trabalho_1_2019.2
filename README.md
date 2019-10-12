@@ -13,6 +13,8 @@ Para rodar o servidor, vá até `<projeto>/src/Servidor` e execute o comando `py
    
 ### Cliente
 
+OBS: A versão do `node` utilizada foi a versão 11.0.0
+
 Para rodar o cliente, vá até `<projeto>/src/Cliente` e execute o comando `node .`. Por padrão, o servidor web iniciado        disponibilizará a aplicação no endereço `localhost:8888`. Para acessar o cliente, basta digitar `localhost:8888` na barra do navegador.
 
 ## Instalação no Windows
