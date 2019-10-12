@@ -92,6 +92,9 @@ class DispReceiveUDP(Thread):
                                     for i in range(0,len(self.ops.keys())):
                                         if(list(self.ops.keys())[i] == ret.nome_op):
                                             response.resposta = self.ops[list(self.ops.keys())[i]]
+                                print(str(self.id)+" recebendo requisição:")
+                                print("    operação: "+str(ret.nome_op))
+                                print("    resultado: "+str(response.resposta))
                                 snd = SendUDP(self.server_host,self.server_port)
                                 snd.send(response.SerializeToString())
                     except PermissionError:

@@ -23,9 +23,8 @@ class Servidor(Thread) :
         self.disp_port = disp_port
 
     def descobrir(self):
-        print("Servidor descobrindo dispositivos...")
+        print("Servidor iniciando descoberta...")
         del self.lista[:]
-        print("Descoberta: Lista do Servidor: "+str(self.lista))
         snd = SendUDP(self.disp_host,self.disp_port)
         msg = Msgs_pb2.MsgSrvDisp()
         msg.tipo = Msgs_pb2.MsgSrvDisp.Tipo.DESCOBERTA

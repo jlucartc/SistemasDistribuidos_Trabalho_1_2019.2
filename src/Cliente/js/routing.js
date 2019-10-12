@@ -41,24 +41,18 @@ router.get('/descobrir',function(req,res){
 
       msg = new mensagens.MsgSrvCli.decode(data)
 
-      console.log(dispositivos)
-
       dispositivos = msg.disps
 
       var itens = msg.disps
 
-      console.log("Até aqui, tudo bem");
-
       if(itens.length == 0){
 
-        console.log("Fui por aqui...")
         res.render('index',{testemsg : "Não há dispositivos conectados no momento", itens : itens, type: "info"});
         conn.end();
         return;
 
       }else{
 
-        console.log("Ou por aqui...")
         res.render('index',{itens : itens});
         conn.end();
         return;
@@ -109,9 +103,6 @@ router.post('/executar',function(req,res){
 
   var op = string[1];
   var id = string[0];
-
-  console.log("op: "+op);
-  console.log("id: "+id);
 
   var timeout = 3000;
 

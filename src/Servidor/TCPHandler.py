@@ -31,7 +31,7 @@ class TCPHandler(Thread):
                 if(mensagem.tipo == Msgs_pb2.MsgSrvCli.Tipo.DESCOBERTA):
                     # Manda mensagem UDP multicast para grupo de dispositivos
                     response = Msgs_pb2.MsgSrvCli()
-                    print("Lista do servidor: "+str(self.lista))
+                    print("Lista de dispositivos: "+str(self.lista))
                     response.tipo = Msgs_pb2.MsgSrvCli.Tipo.DISPOSITIVOS
                     response.disps.extend(self.lista)
                     self.conn.send(response.SerializeToString())

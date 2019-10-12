@@ -48,7 +48,10 @@ class ServerReceiveUDP(Thread):
                     ret = Msgs_pb2.MsgSrvDisp()
                     ret.ParseFromString(msg)
                     if( ret.tipo == Msgs_pb2.MsgSrvDisp.Tipo.ANUNCIO or ret.tipo == Msgs_pb2.MsgSrvDisp.Tipo.DISPOSITIVO ):
-                        print("Servidor recebendo dispositivo descoberto: "+ret.disp_id)
+                        if( ret.tipo == Msgs_pb2.MsgSrvDisp.Tipo.DISPOSITIVO ):
+                            print("Servidor descobrindo dispositivo: "+ret.disp_id)
+                        else:
+                            print("Servidor recebendo anuncio: "+ret.disp_id)
                         c = False
                         for j in range(0,len(self.lista)):
                             if( self.lista[j].id == ret.disp.id ):
