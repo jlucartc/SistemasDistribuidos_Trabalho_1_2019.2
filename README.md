@@ -1,7 +1,7 @@
 # SistemasDistribuidos_Trabalho_1_2019.2
 Trabalho da cadeira de Sistemas Distribuidos
 
-O sistema consiste em três partes: Servidor, Cliente e Dispositivos.
+O sistema consiste em quatro partes: Servidor, Cliente, Mensagens e Dispositivos.
 
 O servidor e os dispositivos foram feitos em Python, enquanto o cliente foi feito em Javascript, rodando no Node.js
 
