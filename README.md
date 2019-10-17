@@ -13,6 +13,14 @@ Para rodar o sistema em uma máquina local, primeiro clone este repositório dig
 
 Caso o parâmetro `<nome_da_pasta_de_destino>` seja omitido, o projeto será criado dentro de uma pasta com o nome do repositório.
 
+O cliente requer que Node.js esteja instalado na máquina. Para isso, vamos utilizar o [nvm](https://github.com/nvm-sh/nvm/blob/master/README.md#installation-and-update). Acesse o link e vá para a seção de `Install & Update script`
+
+Para instalar o `nvm`, faça o download do arquivo `install.sh` e o execute com `./install.sh` na pasta de downloads.
+
+Após isso, feche o terminal e abra novamente. Digite `command -v nvm` e caso o retorno seja `nvm`, então a instalação está completa.
+
+Para instalar o Node.js, digite `nvm install node`, e a versão mais atual será instalada.
+
 ### Servidor 
 
 Para rodar o servidor, vá até `<nome_da_pasta_de_destino>/src/Servidor` e execute o comando `python3 iniciar.py`
